@@ -13,7 +13,7 @@ import android.view.Gravity
 import android.widget.*
 import android.graphics.Typeface
 
-private enum class DrawTool {
+enum class DrawTool {
     PEN, MARKER, ERASER
 }
 
@@ -112,7 +112,7 @@ class MainActivity : Activity() {
         colorScroll.addView(colorRow)
         root.addView(colorScroll)
 
-        // ضخامت قلم
+        // تنظیم ضخامت قلم
         val sizeLabel = TextView(this).apply {
             text = "ضخامت قلم:"
             textSize = 14f
@@ -150,7 +150,7 @@ class MainActivity : Activity() {
 
         root.addView(sizeSeekBar)
 
-        // برگشت، جلو و پاک کردن تخته
+        // عملیات تخته
         val actionRow = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
         }
@@ -169,7 +169,7 @@ class MainActivity : Activity() {
 
         root.addView(actionRow)
 
-        // فضای اصلی نقاشی
+        // فضای تخته نقاشی
         root.addView(
             board,
             LinearLayout.LayoutParams(
@@ -189,10 +189,12 @@ class MainActivity : Activity() {
         label: String,
         action: () -> Unit
     ) {
+
         val button = Button(this).apply {
             text = label
             textSize = 12f
             isAllCaps = false
+
             setOnClickListener {
                 action()
             }
@@ -209,7 +211,7 @@ class MainActivity : Activity() {
     }
 }
 
-// کلاس اصلی تخته نقاشی
+// کلاس تخته نقاشی
 class DrawingBoard(context: android.content.Context) : View(context) {
 
     private data class Stroke(
@@ -246,20 +248,27 @@ class DrawingBoard(context: android.content.Context) : View(context) {
         currentWidth = size
     }
 
+    // بازگشت
     fun undo() {
         if (strokes.isNotEmpty()) {
-            redoStrokes.add(strokes.removeAt(strokes.lastIndex))
+            redoStrokes.add(
+                strokes.removeAt(strokes.lastIndex)
+            )
             invalidate()
         }
     }
 
+    // جلو رفتن
     fun redo() {
         if (redoStrokes.isNotEmpty()) {
-            strokes.add(redoStrokes.removeAt(redoStrokes.lastIndex))
+            strokes.add(
+                redoStrokes.removeAt(redoStrokes.lastIndex)
+            )
             invalidate()
         }
     }
 
+    // پاک کردن تخته
     fun clearBoard() {
         strokes.clear()
         redoStrokes.clear()
